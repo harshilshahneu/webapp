@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+export const AccountModel = (sequelize, DataTypes) => {
     const Account = sequelize.define('Account', {
         id: {
             type: DataTypes.UUID,

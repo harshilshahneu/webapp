@@ -3,32 +3,55 @@ import { parse } from 'csv-parse';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { hashPassword } from './bcrypt-utils.js';
+import { Account } from '../sequelize.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const loadCSVToDB = async (req, res) => {
-    try {
-        const csvFilePath = path.join(__dirname, '../../opt/users.csv');
+export const loadCSVtoDB = async (filename) => {
+    
+    const csvFilePath = path.join(__dirname, filename);
+    
+    return new Promise ((resolve, reject) => {
+        const accounts = [];
         const readStream = fs.createReadStream(csvFilePath);
-
+    
         readStream.on('error', (err) => {
             //no such file or directory
-            console.log(err);
+            reject(err);
         })
-        
+            
         readStream
             .pipe(parse({ delimiter: ',', from_line: 2 }))
-            .on('data', async (row) => {
-                //each row is an array of csv columns
+            .on('data', row => {
                 const [first_name, last_name, email, password] = row;
-                const hashedPassword = await hashPassword(password);
-                
+                    
+                accounts.push({
+                    first_name,
+                    last_name,
+                    email,
+                    password,
+                });
             })
-            .on('end', () => {
-                readStream.close();
+            .on('end', async () => {
+                try {
+                    //hash the passwords
+                    for (const account of accounts) {
+                        account.password = await hashPassword(account.password);
+                    }
+    
+                    //bulk create the accounts
+                    await Account.bulkCreate(accounts, {
+                        updateOnDuplicate: ['email'], //@TODO research this update thing
+                    });
+                    console.log('CSV file successfully seeded to DB');
+                    
+                    //close the read stream
+                    readStream.close();
+                    resolve();
+                } catch(err) {
+                    reject(err);
+                }
             })
-    } catch (error) {
-        console.log(error);
-    }
+        })
 };
