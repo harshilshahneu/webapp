@@ -1,5 +1,5 @@
 export const AssignmentModel = (sequelize, DataTypes) => {
-    const Assigment = sequelize.define('Account', {
+    const Assigment = sequelize.define('Assignment', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
