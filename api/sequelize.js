@@ -21,6 +21,14 @@ sequelizeNoUpdateAttributes(sequelize);
 export const Account = AccountModel(sequelize, DataTypes);
 export const Assignment = AssignmentModel(sequelize, DataTypes);
 
+//Define the relationship between the Assignment and the Account
+Assignment.belongsTo(Account, {
+    foreignKey: {
+        allowNull: false
+    }
+});
+Account.hasMany(Assignment);
+
 export const syncDB = async () => {
     try {
         await sequelize.authenticate();

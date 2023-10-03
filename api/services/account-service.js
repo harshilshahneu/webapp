@@ -2,20 +2,22 @@ import { Account } from "../sequelize.js";
 import { validatePassword } from "../utils/bcrypt-utils.js";
 
 //get all the accounts
+//@TODO clean th catch block
 export const getByLogin = async ({email, password}) => {
     try {
+        let AccountId = null;
         const account = await Account.findOne({
             where: {
                 email,
             },
         });
 
-        if(!account) {
-            return false;
+        if(account && (await validatePassword(password, account.password))) {
+            AccountId = account.id;
         }
        
-        return await validatePassword(password, account.password); 
+        return AccountId;
     } catch (err) {
-        return false;
+        return "";
     }
 }
