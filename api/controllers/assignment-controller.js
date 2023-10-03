@@ -18,7 +18,7 @@ export const getAssigments = async (req, res) => {
 //get an assignment by id
 export const getAssigmentById = async (req, res) => {
     try {
-        const { status, assignment } = await assignmentService.getById(req.params.id);
+        const { status, assignment } = await assignmentService.getById(req.params.id, req.user.AccountId);
         res.status(status).json(assignment);
     } catch (err) {
         res.status(404).json(err);
@@ -28,7 +28,7 @@ export const getAssigmentById = async (req, res) => {
 //create an assignment
 export const createAssigment = async (req, res) => {
     try {
-        const { status, newAssignment } = await assignmentService.create(req.body);
+        const { status, newAssignment } = await assignmentService.create(req.body, req.user.AccountId);
         res.status(status).json(newAssignment);
     } catch (err) {
         res.status(404).json(err);
@@ -38,7 +38,7 @@ export const createAssigment = async (req, res) => {
 //update an assignment
 export const updateAssigment = async (req, res) => {
     try {
-        const { status, updatedAssignment } = await assignmentService.update(req.params.id, req.body);
+        const { status, updatedAssignment } = await assignmentService.update(req.params.id, req.body, req.user.AccountId);
         res.status(status).json(updatedAssignment);
     } catch (err) {
         res.status(404).json(err);
@@ -48,7 +48,7 @@ export const updateAssigment = async (req, res) => {
 //delete an assignment
 export const deleteAssigment = async (req, res) => {
     try {
-        const { status } = await assignmentService.remove(req.params.id);
+        const { status } = await assignmentService.remove(req.params.id, req.user.AccountId);
         res.status(status).json();
     } catch (err) {
         res.status(404).json(err);

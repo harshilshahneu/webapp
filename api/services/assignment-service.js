@@ -16,11 +16,25 @@ export const getAll = async () => {
 }
 
 //get an assignment by id
-export const getById = async (id) => {
+export const getById = async (id, AccountId) => {
     try {
-        const assignment = await Assignment.findByPk(id);
+        //check if the assignment exists
+        let assignment = await Assignment.findByPk(id);
+        let status = 200;
+     
+        if(!assignment) {
+            status = 404;
+            assignment = {};
+        }
+
+        //check if the assignment belongs to the user
+        if(assignment.AccountId !== AccountId) {
+            status = 403;
+            assignment = {};
+        }
+        
         return {
-            status: 200,
+            status,
             assignment,
         };
     } catch (err) {
@@ -31,9 +45,12 @@ export const getById = async (id) => {
 }
  
 //create an assignment
-export const create = async (assignment) => {
+export const create = async (assignment, AccountId) => {
     try {
-        const newAssignment = await Assignment.create(assignment);
+        const newAssignment = await Assignment.create({
+            ...assignment,
+            AccountId,
+        });
 
         return {
             status: 201,
@@ -47,17 +64,25 @@ export const create = async (assignment) => {
 }
 
 //update an assignment
-export const update = async (id, assignment) => {
+export const update = async (id, assignment, AccountId) => {
     try {
-        const updatedAssignment = await Assignment.update(assignment, {
-            where: {
-                id,
-            },
-        });
+        const { status } = await getById(id, AccountId);
+
+        if(status === 200) {
+            const updatedAssignment = await Assignment.update(assignment, {
+                where: {
+                    id,
+                },
+            });
+    
+            return {
+                status: 204,
+                updatedAssignment,
+            };
+        }
 
         return {
-            status: 204,
-            updatedAssignment,
+            status,
         };
     } catch (err) {
         return {
@@ -67,18 +92,26 @@ export const update = async (id, assignment) => {
 }
 
 //delete an assignment
-export const remove = async (id) => {
+export const remove = async (id, AccountId) => {
     try {
-        const deletedAssignment = await Assignment.destroy({
-            where: {
-                id,
-            },
-        });
+        const { status } = await getById(id, AccountId);
+
+        if(status === 200) {
+            const deletedAssignment = await Assignment.destroy({
+                where: {
+                    id,
+                },
+            });
+    
+            return {
+                status: 204,
+                deletedAssignment,
+            };
+        }
 
         return {
-            status: 204,
-            deletedAssignment,
-        };
+            status,
+        }
     } catch (err) {
         return {
             status: err,
