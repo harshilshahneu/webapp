@@ -24,6 +24,18 @@ jobs:
       with:
         node-version: '18'
 
+    - name: Setup envirornment variables
+      run: |
+        touch .env
+        echo PORT=${{ vars.PORT }} >> .env
+        echo DB_HOST=${{ vars.DB_HOST }} >> .env
+        echo DB_NAME=${{ vars.DB_NAME}} >> .env
+        echo DB_USER=${{ vars.DB_USER }} >> .env
+        echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+        echo DB_DIALECT=${{ vars.DB_DIALECT }} >> .env
+        echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
+
+
     - name: Install dependencies
       run: npm install
 
