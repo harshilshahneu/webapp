@@ -2,7 +2,7 @@
 
 ## Prerequisites for building and deploying your application locally
 1. Install [Node.js](https://nodejs.org/en/download/)
-2. Install [npm] (https://www.npmjs.com/get-npm)
+2. Install [npm](https://www.npmjs.com/get-npm)
 3. Install [MariaDB](https://mariadb.org/download/)
 4. Setup .env file in the root directory of the project with the following variables:
 ```
