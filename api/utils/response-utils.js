@@ -1,4 +1,4 @@
-export const setResponse = (res, status, headers) => {
+export const setResponse = (res, status, headers, data) => {
     res.status(status)
         .header('cache-control', 'no-cache, no-store, must-revalidate')
         .header('pragma', 'no-cache')
@@ -10,5 +10,5 @@ export const setResponse = (res, status, headers) => {
         }
     }
     
-    res.end();
+    res.json(data);
 }
