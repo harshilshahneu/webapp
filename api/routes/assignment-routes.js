@@ -13,7 +13,10 @@ Router.route('/')
         "name",
         "points",
         "num_of_attempts",
-        "deadline"
+        "deadline",
+    ], [
+        "assignment_created",
+        "assignment_updated"
     ]), assignmentController.createAssigment)
     .all((req, res) => {
         setResponse(res, 405);
@@ -27,7 +30,10 @@ Router.route('/:id')
         "name",
         "points",
         "num_of_attempts",
-        "deadline"
+        "deadline",
+    ], [
+        "assignment_created",
+        "assignment_updated"
     ]), assignmentController.updateAssigment)
     .delete(validateEmptyPayload, assignmentController.deleteAssigment)
     .all((req, res) => {

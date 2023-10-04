@@ -14,15 +14,26 @@ export const validateEmptyPayload = (req, res, next) => {
 }
 
 //for POST requests where the payload should be exaclty the schema
-export const validatePayloadSchema = (schemaKeys) => {
+export const validatePayloadSchema = (schemaKeys, optionalKeys) => {
     let valid = true;
     return (req, res, next) => {
         //no query params allowed
         if(Object.keys(req.query).length) {
             valid = false;
         } else {
-            //check if the payload has all the schema properties and no extra properties
             const reqKeys = Object.keys(req.body);
+           
+            //delete the optional keys from the schema
+            if(optionalKeys) {
+                optionalKeys.forEach(key => {
+                    const index = reqKeys.indexOf(key);
+                    if(index > -1) {
+                        reqKeys.splice(index, 1);
+                    }
+                });
+            }
+
+            //check if the payload has all the schema properties and no extra properties
             const hasAllSchemaProperties = schemaKeys.every(key => reqKeys.includes(key));
             const hasNoExtraProperties = reqKeys.every(key => schemaKeys.includes(key));
             valid = hasAllSchemaProperties && hasNoExtraProperties;
@@ -38,7 +49,7 @@ export const validatePayloadSchema = (schemaKeys) => {
 }
 
 //for PUT requests where the payload should have atleast one of the schema properties and no extra properties
-export const validatePayloadProperties = (schemaKeys) => {
+export const validatePayloadProperties = (schemaKeys, optionalKeys) => {
     return (req, res, next) => {
         let valid = false;
 
@@ -46,8 +57,19 @@ export const validatePayloadProperties = (schemaKeys) => {
         if(Object.keys(req.query).length) {
             valid = false;
         } else {
-            //check if the payload has atleast one of the schema properties and no extra properties
             const reqKeys = Object.keys(req.body);
+
+             //delete the optional keys from the schema
+            if(optionalKeys) {
+                optionalKeys.forEach(key => {
+                    const index = reqKeys.indexOf(key);
+                    if(index > -1) {
+                        reqKeys.splice(index, 1);
+                    }
+                });
+            }
+
+            //check if the payload has atleast one of the schema properties and no extra properties
             const hasAtLeastOneSchemaProperty = schemaKeys.some(key => reqKeys.includes(key));
             const hasNoExtraProperties = reqKeys.every(key => schemaKeys.includes(key));
             valid = hasAtLeastOneSchemaProperty && hasNoExtraProperties;
