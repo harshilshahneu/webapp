@@ -31,9 +31,10 @@ sudo apt install unzip
 ```
 3. Add a user to MariaDB (https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11)
 4. SCP the project zip to the server - scp -i ~/.ssh/your_key ./webapp.zip user@your_public_ip:/directory
-5. Unzip the project zip - `unzip webapp.zip`
-6. cd into the project directory
-7. Setup .env file in the root directory of the project with the following variables:
+5. SCP the user.csv to /opt : scp -i ~/.ssh/your_key local_csv_path root@your_public_ip:/opt
+6. Unzip the project zip - `unzip webapp.zip`
+7. cd into the project directory
+8. Setup .env file in the root directory of the project with the following variables:
 ```
 PORT=8080
 DB_HOST=127.0.0.1
@@ -44,5 +45,5 @@ DB_DIALECT=your_db_dialect
 NODE_ENV=your_node_env
 USER_CSV_PATH=path/to/user.csv
 ```
-8. Run `npm install` to install all dependencies
-9. Run `npm run start` to start the application
+1. Run `npm install` to install all dependencies
+2. Run `npm run start` to start the application
