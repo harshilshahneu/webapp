@@ -1,56 +1,73 @@
 import * as assignmentService from '../services/assignment-service.js';
+import { setResponse } from '../utils/response-utils.js';
+import Sequelize from 'sequelize';
 
 //get all assignments
-//@TODO validate the payload from req
-//@TODO refactor to the already existing setResponse function
-//@TODO take care of all the edge cases in catch blocks
-
 export const getAssigments = async (req, res) => {
     try {
-        const { status, assignments } = await assignmentService.getAll();
-        
-        res.status(status).json(assignments);
+        const assignments = await assignmentService.getAll();
+        setResponse(res, 200, null, assignments);
     } catch (err) {
-        res.status(404).json(err);
+        setResponse(res, 400, null, err);
     }
 }
 
 //get an assignment by id
 export const getAssigmentById = async (req, res) => {
     try {
-        const { status, assignment } = await assignmentService.getById(req.params.id, req.user.AccountId);
-        res.status(status).json(assignment);
+        const assignment = await assignmentService.getById(req.params.id);
+        if(assignment) {
+            setResponse(res, 200, null, assignment);
+        } else {
+            setResponse(res, 404);
+        }
     } catch (err) {
-        res.status(404).json(err);
+        setResponse(res, 400, null, err);
     }
 }
 
 //create an assignment
 export const createAssigment = async (req, res) => {
     try {
-        const { status, newAssignment } = await assignmentService.create(req.body, req.user.AccountId);
-        res.status(status).json(newAssignment);
+        const newAssignment = await assignmentService.create(req.body, req.user.AccountId);
+        setResponse(res, 201, null, newAssignment);
     } catch (err) {
-        res.status(404).json(err);
+        if(err instanceof Sequelize.DatabaseError) {
+            err = err.message;
+        } else if (err instanceof Sequelize.ValidationError || err instanceof Sequelize.UniqueConstraintError) {
+            err = err.errors.map(err => err.message);
+        }
+
+        setResponse(res, 400, null, err);
     }
 }
 
 //update an assignment
 export const updateAssigment = async (req, res) => {
     try {
-        const { status, updatedAssignment } = await assignmentService.update(req.params.id, req.body, req.user.AccountId);
-        res.status(status).json(updatedAssignment);
+        const status = await assignmentService.update(req.params.id, req.body, req.user.AccountId);
+        setResponse(res, status);
     } catch (err) {
-        res.status(404).json(err);
+        if(err instanceof Sequelize.DatabaseError) {
+            err = err.message;
+        } else if (err instanceof Sequelize.ValidationError || err instanceof Sequelize.UniqueConstraintError) {
+            err = err.errors.map(err => err.message);
+        }
+
+        setResponse(res, 400, null, err);
     }
 }
 
 //delete an assignment
 export const deleteAssigment = async (req, res) => {
     try {
-        const { status } = await assignmentService.remove(req.params.id, req.user.AccountId);
-        res.status(status).json();
+        const status = await assignmentService.remove(req.params.id, req.user.AccountId);
+        setResponse(res, status);
     } catch (err) {
-        res.status(404).json(err);
+        if(err instanceof Sequelize.DatabaseError) {
+            err = err.message;
+        }
+
+        setResponse(res, 400, null, err);
     }
 }
