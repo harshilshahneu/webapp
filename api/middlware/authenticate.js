@@ -1,5 +1,6 @@
 import * as accountService from '../services/account-service.js';
 import { setResponse } from '../utils/response-utils.js';
+import { setAuthHeaders } from '../utils/set-header-utils.js';
 
 export const authenticate = async (req, res, next) => {
     try {
@@ -15,14 +16,8 @@ export const authenticate = async (req, res, next) => {
                 // Access granted...
                 req.user = { email, AccountId };
 
-                //add headers
-                res.set({
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': '*',
-                    'Access-Control-Allow-Credentials': 'true',
-                    'Access-Control-Allow-Headers': 'X-Requested-With,Content-Type,Accept,Origin',
-                    'expires': '-1',
-                });
+                //add authenticate headers
+                setAuthHeaders(res);
 
                 return next();
             }
