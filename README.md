@@ -13,6 +13,7 @@ DB_USER=your_db_user
 DB_PASSWORD=your_db_password
 DB_DIALECT=your_db_dialect
 NODE_ENV=your_node_env
+USER_CSV_PATH=path/to/user.csv
 ```
 5. Run `npm install` to install all dependencies
 6. Run `npm run start` to start the application
@@ -41,6 +42,7 @@ DB_USER=your_db_user
 DB_PASSWORD=your_db_password
 DB_DIALECT=your_db_dialect
 NODE_ENV=your_node_env
+USER_CSV_PATH=path/to/user.csv
 ```
 8. Run `npm install` to install all dependencies
 9. Run `npm run start` to start the application
