@@ -39,7 +39,7 @@ export const syncDB = async () => {
         console.log('All models were synchronized successfully.');
 
         //load the csv file to the database
-        await loadCSVtoDB("../../opt/users.csv");
+        await loadCSVtoDB(process.env.USER_CSV_PATH);
     } catch (error) {
         console.log(error);
     }

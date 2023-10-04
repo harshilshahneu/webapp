@@ -1,20 +1,13 @@
 import fs from 'fs';
 import { parse } from 'csv-parse';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { hashPassword } from './bcrypt-utils.js';
 import { Account } from '../sequelize.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export const loadCSVtoDB = async (file) => {
 
-export const loadCSVtoDB = async (filename) => {
-    
-    const csvFilePath = path.join(__dirname, filename);
-    
     return new Promise ((resolve, reject) => {
         const accounts = [];
-        const readStream = fs.createReadStream(csvFilePath);
+        const readStream = fs.createReadStream(file);
     
         readStream.on('error', (err) => {
             //no such file or directory
@@ -42,7 +35,7 @@ export const loadCSVtoDB = async (filename) => {
     
                     //bulk create the accounts
                     await Account.bulkCreate(accounts, {
-                        updateOnDuplicate: ['email'], //@TODO research this update thing
+                        ignoreDuplicates: true,
                     });
                     console.log('CSV file successfully seeded to DB');
                     
