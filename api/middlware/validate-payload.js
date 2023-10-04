@@ -27,12 +27,15 @@ export const validatePayloadSchema = (schemaKeys, optionalKeys) => {
             if(optionalKeys) {
                 optionalKeys.forEach(key => {
                     const index = reqKeys.indexOf(key);
+                    console.log(index);
                     if(index > -1) {
                         reqKeys.splice(index, 1);
+                        delete req.body[key];
                     }
                 });
             }
 
+            console.log(reqKeys)
             //check if the payload has all the schema properties and no extra properties
             const hasAllSchemaProperties = schemaKeys.every(key => reqKeys.includes(key));
             const hasNoExtraProperties = reqKeys.every(key => schemaKeys.includes(key));
@@ -65,6 +68,7 @@ export const validatePayloadProperties = (schemaKeys, optionalKeys) => {
                     const index = reqKeys.indexOf(key);
                     if(index > -1) {
                         reqKeys.splice(index, 1);
+                        delete req.body[key];
                     }
                 });
             }
