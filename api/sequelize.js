@@ -35,7 +35,7 @@ export const syncDB = async () => {
         console.log('Connection has been established successfully.');
 
         //sync with force true if environment is development
-        await sequelize.sync({ force: process.env.NODE_ENV === 'development' });
+        await sequelize.sync({ alter: true });
         console.log('All models were synchronized successfully.');
 
         //load the csv file to the database

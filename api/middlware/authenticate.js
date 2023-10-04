@@ -1,4 +1,5 @@
 import * as accountService from '../services/account-service.js';
+import { setResponse } from '../utils/response-utils.js';
 
 export const authenticate = async (req, res, next) => {
     // parse login and password from headers
@@ -17,6 +18,12 @@ export const authenticate = async (req, res, next) => {
     }
 
     // Access denied...
-    res.set('WWW-Authenticate', 'Basic realm="401"'); // challenge
-    res.status(401).send('Authentication required.');
+    // if the email and password are not set, challenge the client to authenticate
+    // if the email and password are set, but incorrect, send only 401
+    const authenticateHeader = email && password ? {} : { "WWW-Authenticate": 'Basic realm="Access to the staging site", charset="UTF-8"' };
+    setResponse(
+        res,
+        401,
+        authenticateHeader
+    )
 }
