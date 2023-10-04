@@ -31,8 +31,13 @@ export const AssignmentModel = (sequelize, DataTypes) => {
             allowNull: false,
         }
     }, {
-        createdAt: 'account_created',
-        updatedAt: 'account_updated',
+        createdAt: 'assignment_created',
+        updatedAt: 'assignment_updated',
+        scopes: {
+            withoutAccountId: {
+                attributes: { exclude: ['AccountId'] },
+            },
+        }
     });
 
     return Assignment;
