@@ -15,6 +15,17 @@ app.disable('x-powered-by');
 
 //Add middleware
 app.use(express.json());
+
+//catch invalid json
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        res.status(400).json();
+        return;
+    }
+
+    next();
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
