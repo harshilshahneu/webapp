@@ -1,8 +1,10 @@
-import { getConnection } from "../../api/services/healthz-service";
+import request from 'supertest';
+import app from '../../api/app.js';
 
-describe("Database connection", () => {
-    test('should check the connection', async () => { 
-        const connection = await getConnection();
-        expect(connection.status).toBe(200);
-     })
+describe('GET /healthz', () => {
+    it('should return status 200', async () => {
+      const response = await request(app).get('/healthz');
+  
+      expect(response.status).toBe(200);
+    });
 });
