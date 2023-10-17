@@ -14,6 +14,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: zip application
+        run: zip -r webapp.zip .
+        
       - name: Install Packer
         run: |
           packer init ./packer/ami.pkr.hcl
