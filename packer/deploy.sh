@@ -27,26 +27,26 @@ sudo apt install -y mariadb-server
 
 #make and folder unzip the project
 sudo mkdir webapp
-unzip webapp.zip -d webapp
+sudo unzip webapp.zip -d webapp
 
 cd webapp/ || exit
 
 #create the .env
-cat<<EOL > .env
-PORT=8080
-DB_HOST=127.0.0.1
-DB_NAME=HealthConnectDB
-DB_USER=admin
-DB_PASSWORD=password
-DB_DIALECT=mysql
-NODE_ENV=prod
-USER_CSV_PATH=/opt/users.csv
-EOL
+# cat<<EOL > .env
+# PORT=8080
+# DB_HOST=127.0.0.1
+# DB_NAME=HealthConnectDB
+# DB_USER=admin
+# DB_PASSWORD=password
+# DB_DIALECT=mysql
+# NODE_ENV=prod
+# USER_CSV_PATH=/opt/users.csv
+# EOL
 
 #setup db
 echo "GRANT ALL ON *.* TO 'admin'@'localhost' IDENTIFIED BY 'password' WITH GRANT OPTION;" | sudo mariadb
 echo "FLUSH PRIVILEGES;" | sudo mariadb
-echo "CREATE DATABASE HealthConnectDB"
+echo "CREATE DATABASE HealthConnectDB;" | sudo mariadb
 
 #install the npm dependencies
 npm install
