@@ -32,11 +32,6 @@ jobs:
       - name: zip application
         run: zip -r webapp.zip .
 
-      - name: Install Packer
-        uses: hashicorp/setup-packer@v1
-        with:
-          version: 1.9.4
-
       - name: Packer init
         run: |
           packer init ./packer/ami.pkr.hcl
