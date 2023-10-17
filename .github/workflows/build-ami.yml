@@ -19,9 +19,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Run Integration Tests
-      #   uses: ./.github/workflows/integration-test.yml
-
       - name: Setup envirornment variables
         run: |
           touch .env
@@ -31,6 +28,7 @@ jobs:
           echo DB_USER=${{ vars.DB_USER }} >> .env
           echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
           echo DB_DIALECT=${{ vars.DB_DIALECT }} >> .env
+          echo USER_CSV_PATH=${{ vars.USER_CSV_PATH }} >> .env
           echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
 
       - name: zip application
@@ -46,5 +44,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           packer build ./packer/ami.pkr.hcl
-          AMI_ID=$(grep -o 'ami-[a-z0-9]\+' output.txt)
-          echo "AMI ID: $AMI_ID"
+        

@@ -81,11 +81,6 @@ build {
     destination = "~/webapp.zip"
   }
 
-  provisioner "file" {
-    source      = "./application/users.csv"
-    destination = "~/opt/users.csv"
-  }
-
   provisioner "shell" {
     scripts      = ["./packer/deploy.sh"]
     pause_before = "10s"
