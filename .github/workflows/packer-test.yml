@@ -1,0 +1,33 @@
+name: Packer Validation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-packer-template:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Packer
+        run: |
+          packer init ./packer/ami.pkr.hcl
+
+      - name: Run packer fmt
+        run: |
+          if ! packer fmt -check ./packer/ami.pkr.hcl; then
+          echo "Failed - Packer fmt"
+          exit 1
+          fi
+
+      - name: Run packer validate
+        run: |
+          if ! packer validate ./packer/ami.pkr.hcl; then
+          echo "Failed - Packer validate"
+          exit 1
+          fi
