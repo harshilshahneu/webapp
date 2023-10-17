@@ -25,8 +25,9 @@ npm -v
 echo "installing mariadb"
 sudo apt install -y mariadb-server
 
-#unzip the project
-unzip webapp.zip
+#make and folder unzip the project
+sudo mkdir webapp
+unzip webapp.zip -d webapp
 
 cd webapp/ || exit
 
