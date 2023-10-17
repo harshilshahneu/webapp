@@ -49,6 +49,6 @@ echo "FLUSH PRIVILEGES;" | sudo mariadb
 echo "CREATE DATABASE HealthConnectDB;" | sudo mariadb
 
 #install the npm dependencies
-npm install
+sudo npm install
 
 #@IMP the .env creation and setting up mariadb should be done in githubactions or somewhere else
