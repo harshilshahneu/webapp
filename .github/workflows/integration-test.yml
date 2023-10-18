@@ -13,18 +13,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # - name: Setup MySql
-    #   uses: mirromutth/mysql-action@v1.1
-    #   with:
-    #     mysql database: ${{ vars.DB_NAME }}
-    #     mysql root password: ${{ secrets.DB_PASSWORD}}
-    - name: Setup MariaDB and create admin user
-      uses: getong/mariadb-action@v1.1
+    - name: Setup MySql
+      uses: mirromutth/mysql-action@v1.1
       with:
         mysql database: ${{ vars.DB_NAME }}
-        mysql root password: ${{ secrets.DB_PASSWORD }}
-        mysql user: ${{ vars.DB_USER }} 
-        mysql password: ${{ secrets.DB_PASSWORD }} 
+        mysql root password: ${{ secrets.DB_PASSWORD}}
             
     - name: Setup Node.js
       uses: actions/setup-node@v3
