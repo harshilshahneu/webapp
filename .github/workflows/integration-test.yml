@@ -19,13 +19,11 @@ jobs:
     #     mysql database: ${{ vars.DB_NAME }}
     #     mysql root password: ${{ secrets.DB_PASSWORD}}
     - name: Setup MariaDB and create admin user
-      uses: monte-cassino/mariadb-action@v1.0
+      uses: getong/mariadb-action@v1.1
       with:
-        mariadb database: ${{ vars.DB_NAME }}
-        mariadb root password: ${{ secrets.DB_PASSWORD}}
-        mariadb additional commands: |
-          GRANT ALL ON *.* TO '${{ secrets.DB_USER }}'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}' WITH GRANT OPTION;
-          FLUSH PRIVILEGES;
+        mysql root password: ${{ secrets.DB_PASSWORD }}
+        mysql user: ${{ vars.DB_USER }} 
+        mysql password: ${{ secrets.DB_PASSWORD }} 
             
     - name: Setup Node.js
       uses: actions/setup-node@v3
