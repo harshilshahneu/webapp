@@ -13,6 +13,7 @@ export const AssignmentModel = (sequelize, DataTypes) => {
         points: {
             type: DataTypes.INTEGER,
             validate: {
+                isInt: true,
                 min: 0,
                 max: 100,
             },
@@ -21,6 +22,7 @@ export const AssignmentModel = (sequelize, DataTypes) => {
         num_of_attempts: {
             type: DataTypes.INTEGER,
             validate: {
+                isInt: true,
                 min: 0,
                 max: 100,
             },
