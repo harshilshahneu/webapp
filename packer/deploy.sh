@@ -44,7 +44,7 @@ cd webapp/ || exit
 # EOL
 
 #setup db
-echo "GRANT ALL ON *.* TO 'admin'@'localhost' IDENTIFIED BY 'password' WITH GRANT OPTION;" | sudo mariadb
+echo "GRANT ALL ON *.* TO 'root'@'localhost' IDENTIFIED BY 'password' WITH GRANT OPTION;" | sudo mariadb
 echo "FLUSH PRIVILEGES;" | sudo mariadb
 echo "CREATE DATABASE HealthConnectDB;" | sudo mariadb
 
