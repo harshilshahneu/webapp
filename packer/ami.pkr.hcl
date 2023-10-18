@@ -105,7 +105,7 @@ source "amazon-ebs" "my-ami" {
   launch_block_device_mappings {
     delete_on_termination = true
     device_name           = "${var.device_name}"
-    volume_size           = "${var.volume_size}" 
+    volume_size           = "${var.volume_size}"
     volume_type           = "${var.volume_type}"
   }
 }
