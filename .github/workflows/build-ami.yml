@@ -31,6 +31,25 @@ jobs:
       - name: zip application
         run: zip -r webapp.zip .
 
+      - name: Setup MySQL Database
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "CREATE USER '${{ vars.DB_USER }}'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';"  
+          mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "GRANT ALL ON *.* TO '${{ vars.DB_USER }}'@'localhost';"
+          mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "FLUSH PRIVILEGES;"
+          mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "CREATE DATABASE ${{ vars.DB_NAME }};"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run integration tests
+        run: npm test
+
       - name: Setup packer envirornment variables
         run: |
           touch ./packer/ami.pkvars.hcl
