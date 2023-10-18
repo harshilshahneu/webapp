@@ -8,8 +8,48 @@ on:
     types: [closed]
 
 jobs:
-  build_and_deploy_ami:
+  integration-tests:
     if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup MySQL Database
+      run: |
+        sudo /etc/init.d/mysql start
+        mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "CREATE USER '${{ vars.DB_USER }}'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';"  
+        mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "GRANT ALL ON *.* TO '${{ vars.DB_USER }}'@'localhost';"
+        mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "FLUSH PRIVILEGES;"
+        mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "CREATE DATABASE ${{ vars.DB_NAME }};"
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Setup envirornment variables
+      run: |
+        touch .env
+        echo PORT=${{ vars.PORT }} >> .env
+        echo DB_HOST=${{ vars.DB_HOST }} >> .env
+        echo DB_NAME=${{ vars.DB_NAME}} >> .env
+        echo DB_USER=${{ vars.DB_USER }} >> .env
+        echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
+        echo DB_DIALECT=${{ vars.DB_DIALECT }} >> .env
+        echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
+
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run integration tests
+      run: npm test
+
+  build_and_deploy_ami:
+    needs: integration-tests
+    if: success()
     runs-on: ubuntu-latest
 
     steps:
@@ -30,25 +70,6 @@ jobs:
 
       - name: zip application
         run: zip -r webapp.zip .
-
-      - name: Setup MySQL Database
-        run: |
-          sudo /etc/init.d/mysql start
-          mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "CREATE USER '${{ vars.DB_USER }}'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';"  
-          mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "GRANT ALL ON *.* TO '${{ vars.DB_USER }}'@'localhost';"
-          mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "FLUSH PRIVILEGES;"
-          mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "CREATE DATABASE ${{ vars.DB_NAME }};"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run integration tests
-        run: npm test
 
       - name: Setup packer envirornment variables
         run: |
