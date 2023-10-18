@@ -13,12 +13,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup MySql
-      uses: mirromutth/mysql-action@v1.1
+    # - name: Setup MySql
+    #   uses: mirromutth/mysql-action@v1.1
+    #   with:
+    #     mysql database: ${{ vars.DB_NAME }}
+    #     mysql root password: ${{ secrets.DB_PASSWORD}}
+    - name: Setup MariaDB and create admin user
+      uses: monte-cassino/mariadb-action@v1.0
       with:
-        mysql database: ${{ vars.DB_NAME }}
-        mysql root password: ${{ secrets.DB_PASSWORD}}
-        
+        mariadb database: ${{ vars.DB_NAME }}
+        mariadb root password: ${{ secrets.DB_PASSWORD}}
+        mariadb additional commands: |
+          GRANT ALL ON *.* TO '${{ secrets.DB_USER }}'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}' WITH GRANT OPTION;
+          FLUSH PRIVILEGES;
+            
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
