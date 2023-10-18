@@ -22,7 +22,7 @@ jobs:
     # Add commands to set up the MySQL database
     - name: Setup MySQL Database
       run: |
-        mysql -u root -p -e "GRANT ALL ON *.* TO '${{ vars.DB_USER }}'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}' WITH GRANT OPTION;"
+        mysql -u root -p -e "GRANT ALL ON *.* TO '${{ vars.DB_USER }}'@'127.0.0.1' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}' WITH GRANT OPTION;"
         mysql -u root -p -e "FLUSH PRIVILEGES;"
             
     - name: Setup Node.js
