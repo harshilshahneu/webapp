@@ -29,6 +29,9 @@ sudo apt install -y mariadb-server
 sudo mkdir webapp
 sudo unzip webapp.zip -d webapp
 
+#remove .git
+sudo apt-get remove git
+
 #setup db
 echo "GRANT ALL ON *.* TO 'admin'@'localhost' IDENTIFIED BY 'password' WITH GRANT OPTION;" | sudo mariadb
 echo "FLUSH PRIVILEGES;" | sudo mariadb
@@ -39,5 +42,3 @@ cd webapp/ || exit
 
 #install the npm dependencies
 sudo npm install
-
-#@IMP the .env creation and setting up mariadb should be done in githubactions or somewhere else

@@ -54,7 +54,7 @@ variable "device_name" {
 
 variable "volume_size" {
   type    = number
-  default = 8
+  default = 25
 }
 
 variable "volume_type" {
@@ -72,6 +72,8 @@ variable "demo_id" {
   default = null
 }
 
+// Add default vpc
+
 
 # https://www.packer.io/plugins/builders/amazon/ebs
 source "amazon-ebs" "my-ami" {
@@ -80,7 +82,7 @@ source "amazon-ebs" "my-ami" {
   ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "${var.ami_description}"
   ami_users = [
-    "${var.dev_id}",  # dev account ID @todo check if this is needed
+    "${var.dev_id}",  # dev account ID 
     "${var.demo_id}", # prod account ID
   ]
   instance_type = "${var.instance_type}"
@@ -103,7 +105,7 @@ source "amazon-ebs" "my-ami" {
   launch_block_device_mappings {
     delete_on_termination = true
     device_name           = "${var.device_name}"
-    volume_size           = "${var.volume_size}" //@todo crosscheck this value
+    volume_size           = "${var.volume_size}" 
     volume_type           = "${var.volume_type}"
   }
 }
@@ -117,10 +119,6 @@ build {
   }
 
   provisioner "shell" {
-    environment_vars = [
-      "DEBIAN_FRONTEND=noninteractive",
-      "CHECKPOINT_DISABLE=1"
-    ]
     scripts      = ["./packer/deploy.sh"]
     pause_before = "10s"
     timeout      = "10s"
