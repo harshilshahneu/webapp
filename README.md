@@ -47,3 +47,22 @@ USER_CSV_PATH=path/to/user.csv
 ```
 1. Run `npm install` to install all dependencies
 2. Run `npm run start` to start the application
+
+## Packer Configuration for creating an AMI
+
+To create an Amazon Machine Image (AMI) for the web application using Packer, define the following variables in your Packer configuration file:
+```
+aws_region          = 
+source_ami_filter   =
+ssh_username        = 
+ami_description     = 
+instance_type       =
+dev_id              = 
+demo_id             =
+profile             = 
+root_device_type    = 
+virtualization_type =
+device_name         = 
+volume_size         = 
+volume_type         = 
+```
