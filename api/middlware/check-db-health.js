@@ -8,14 +8,7 @@ export const getDBStatus = async (req, res, next) => {
         if(status === 200) {
             return next();
         } else {
-            switch(status) {
-                case -61:
-                    setResponse(res, 503);
-                    break;
-                default:
-                    setResponse(res, 400);
-                    break;
-            }
+            setResponse(res, 503);
         }
     } catch (err) {
         console.log(err);
