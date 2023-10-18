@@ -34,18 +34,18 @@ jobs:
       - name: Setup packer envirornment variables
         run: |
           touch ./packer/ami.pkvars.hcl
-          echo aws_region=${{ vars.AWS_REGION }} >> ./packer/ami.pkvars.hcl
-          echo source_ami_filter=${{ vars.SOURCE_AMI_FILTER }} >> ./packer/ami.pkvars.hcl
-          echo ssh_username=${{ vars.SSH_USERNAME}} >> ./packer/ami.pkvars.hcl
-          echo instance_type=${{ vars.INSTANCE_TYPE }} >> ./packer/ami.pkvars.hcl
-          echo dev_id=${{ secrets.DEV_ID }} >> ./packer/ami.pkvars.hcl
-          echo demo_id=${{ secrets.DEMO_ID }} >> ./packer/ami.pkvars.hcl
-          echo profile=${{ vars.PROFILE }} >> ./packer/ami.pkvars.hcl
-          echo root_device_type=${{ vars.ROOT_DEVICE_TYPE }} >> ./packer/ami.pkvars.hcl
-          echo virtualization_type=${{ vars.VIRTUALIZATION_TYPE }} >> ./packer/ami.pkvars.hcl
-          echo device_name=${{ vars.DEVICE_NAME }} >> ./packer/ami.pkvars.hcl
-          echo volume_size=${{ vars.VOLUME_SIZE }} >> ./packer/ami.pkvars.hcl
-          echo volume_type=${{ vars.VOLUME_TYPE }} >> ./packer/ami.pkvars.hcl
+          echo aws_region=\"${{ vars.AWS_REGION }}\" >> ./packer/ami.pkvars.hcl
+          echo source_ami_filter=\"${{ vars.SOURCE_AMI_FILTER }}\" >> ./packer/ami.pkvars.hcl
+          echo ssh_username=\"${{ vars.SSH_USERNAME}}\" >> ./packer/ami.pkvars.hcl
+          echo instance_type=\"${{ vars.INSTANCE_TYPE }}\" >> ./packer/ami.pkvars.hcl
+          echo dev_id=\"${{ secrets.DEV_ID }}\" >> ./packer/ami.pkvars.hcl
+          echo demo_id=\"${{ secrets.DEMO_ID }}\" >> ./packer/ami.pkvars.hcl
+          echo profile=\"${{ vars.PROFILE }}\" >> ./packer/ami.pkvars.hcl
+          echo root_device_type=\"${{ vars.ROOT_DEVICE_TYPE }}\" >> ./packer/ami.pkvars.hcl
+          echo virtualization_type=\"${{ vars.VIRTUALIZATION_TYPE }}\" >> ./packer/ami.pkvars.hcl
+          echo device_name=\"${{ vars.DEVICE_NAME }}\" >> ./packer/ami.pkvars.hcl
+          echo volume_size=\"${{ vars.VOLUME_SIZE }}\" >> ./packer/ami.pkvars.hcl
+          echo volume_type=\"${{ vars.VOLUME_TYPE }}\" >> ./packer/ami.pkvars.hcl
 
       - name: Packer init
         run: |
