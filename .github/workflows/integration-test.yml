@@ -13,20 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # - name: Setup MySql
-    #   uses: mirromutth/mysql-action@v1.1
-    #   with:
-    #     mysql root password: ${{ secrets.DB_PASSWORD }}
-    #     mysql database: ${{ vars.DB_NAME }}
-
-    # Add commands to set up the MySQL database
     - name: Setup MySQL Database
       run: |
         sudo /etc/init.d/mysql start
-        mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';"  
-        mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "GRANT ALL ON *.* TO 'admin'@'localhost';"
-        mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "FLUSH PRIVILEGES;"
-        mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "CREATE DATABASE HealthConnectDB;"
+        mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "CREATE USER '${{ vars.DB_USER }}'@'localhost' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}';"  
+        mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "GRANT ALL ON *.* TO '${{ vars.DB_USER }}'@'localhost';"
+        mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "FLUSH PRIVILEGES;"
+        mysql -h 127.0.0.1 --port 3306 -u root -p'${{ secrets.ROOT_DB_PASSWORD }}' -e "CREATE DATABASE ${{ vars.DB_NAME }};"
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
