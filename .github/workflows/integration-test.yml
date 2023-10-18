@@ -13,6 +13,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # - name: Setup MySql
+    #   uses: mirromutth/mysql-action@v1.1
+    #   with:
+    #     mysql root password: ${{ secrets.DB_PASSWORD }}
+    #     mysql database: ${{ vars.DB_NAME }}
+
     # Add commands to set up the MySQL database
     - name: Setup MySQL Database
       run: |
@@ -20,11 +26,7 @@ jobs:
         mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';"  
         mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "GRANT ALL ON *.* TO 'admin'@'localhost';"
         mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "FLUSH PRIVILEGES;"
-    - name: Setup MySql
-      uses: mirromutth/mysql-action@v1.1
-      with:
-        mysql root password: ${{ secrets.DB_PASSWORD }}
-        mysql database: ${{ vars.DB_NAME }}
+        mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "CREATE DATABASE HealthConnectDB;"
 
     - name: Setup Node.js
       uses: actions/setup-node@v3
