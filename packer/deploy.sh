@@ -30,7 +30,7 @@ sudo mkdir webapp
 sudo unzip webapp.zip -d webapp
 
 #remove .git
-sudo apt-get remove git
+sudo apt-get remove -y git
 
 #setup db
 echo "GRANT ALL ON *.* TO 'admin'@'localhost' IDENTIFIED BY 'password' WITH GRANT OPTION;" | sudo mariadb
