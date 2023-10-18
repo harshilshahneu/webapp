@@ -16,8 +16,6 @@ jobs:
     - name: Setup MySql
       uses: mirromutth/mysql-action@v1.1
       with:
-        # mysql database: ${{ vars.DB_NAME }}
-        # mysql root password: ${{ secrets.DB_PASSWORD}}
         mysql root password: ${{ secrets.DB_PASSWORD }}
         mysql database: ${{ vars.DB_NAME }}
         mysql username: ${{ secrets.DB_USER }}
