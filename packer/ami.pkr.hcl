@@ -12,9 +12,9 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
-variable "source_ami" {
+variable "source_ami_filter" {
   type    = string
-  default = "ami-06db4d78cb1d3bbf9" # Ubuntu 22.04 LTS
+  default = "debian-12-amd64-*" # Debian 12
 }
 
 variable "ssh_username" {
@@ -24,7 +24,7 @@ variable "ssh_username" {
 
 variable "ami_description" {
   type    = string
-  default = "Assignment 5 AMI"
+  default = "ami"
 }
 
 variable "instance_type" {
@@ -32,20 +32,46 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
-variable "accessible_regions" {
-  type    = list(string)
-  default = ["us-east-1"]
-}
-
-variable "accessible_users" {
-  type    = list(string)
-  default = ["962114538522"] # share with demo
-}
-
 variable "profile" {
   type    = string
   default = "dev"
 }
+
+variable "root_device_type" {
+  type    = string
+  default = "ebs"
+}
+
+variable "virtualization_type" {
+  type    = string
+  default = "hvm"
+}
+
+variable "device_name" {
+  type    = string
+  default = "/dev/xvda"
+}
+
+variable "volume_size" {
+  type    = number
+  default = 8
+}
+
+variable "volume_type" {
+  type    = string
+  default = "gp2"
+}
+
+variable "dev_id" {
+  type    = string
+  default = null
+}
+
+variable "demo_id" {
+  type    = string
+  default = null
+}
+
 
 # https://www.packer.io/plugins/builders/amazon/ebs
 source "amazon-ebs" "my-ami" {
@@ -53,13 +79,22 @@ source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "${var.ami_description}"
-  ami_regions     = "${var.accessible_regions}"
-  ami_users       = "${var.accessible_users}"
-  instance_type   = "${var.instance_type}"
-  source_ami      = "${var.source_ami}"
-  ssh_username    = "${var.ssh_username}"
-  vpc_id          = "vpc-0304e2b2fce84451c"
+  ami_users = [
+    "${var.dev_id}",  # dev account ID @todo check if this is needed
+    "${var.demo_id}", # prod account ID
+  ]
+  instance_type = "${var.instance_type}"
+  ssh_username  = "${var.ssh_username}"
 
+  source_ami_filter {
+    filters = {
+      name                = "${var.source_ami_filter}"
+      root-device-type    = "${var.root_device_type}"
+      virtualization-type = "${var.virtualization_type}"
+    }
+    most_recent = true
+    owners      = ["amazon"]
+  }
   aws_polling {
     delay_seconds = 120
     max_attempts  = 50
@@ -67,9 +102,9 @@ source "amazon-ebs" "my-ami" {
 
   launch_block_device_mappings {
     delete_on_termination = true
-    device_name           = "/dev/xvda"
-    volume_size           = 8
-    volume_type           = "gp2"
+    device_name           = "${var.device_name}"
+    volume_size           = "${var.volume_size}" //@todo crosscheck this value
+    volume_type           = "${var.volume_type}"
   }
 }
 
@@ -82,6 +117,10 @@ build {
   }
 
   provisioner "shell" {
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive",
+      "CHECKPOINT_DISABLE=1"
+    ]
     scripts      = ["./packer/deploy.sh"]
     pause_before = "10s"
     timeout      = "10s"

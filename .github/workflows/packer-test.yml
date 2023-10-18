@@ -16,6 +16,22 @@ jobs:
 
       - name: zip application
         run: zip -r webapp.zip .
+
+      - name: Setup envirornment variables
+        run: |
+          touch ./packer/ami.pkr.hcl
+          echo aws_region=${{ vars.AWS_REGION }} >> ./packer/ami.pkr.hcl
+          echo source_ami_filter=${{ vars.SOURCE_AMI_FILTER }} >> ./packer/ami.pkr.hcl
+          echo ssh_username=${{ vars.SSH_USERNAME}} >> ./packer/ami.pkr.hcl
+          echo instance_type=${{ vars.INSTANCE_TYPE }} >> ./packer/ami.pkr.hcl
+          echo dev_id=${{ secrets.DEV_ID }} >> ./packer/ami.pkr.hcl
+          echo demo_id=${{ secrets.DEMO_ID }} >> ./packer/ami.pkr.hcl
+          echo profile=${{ vars.PROFILE }} >> ./packer/ami.pkr.hcl
+          echo root_device_type=${{ vars.ROOT_DEVICE_TYPE }} >> ./packer/ami.pkr.hcl
+          echo virtualization_type=${{ vars.VIRTUALIZATION_TYPE }} >> ./packer/ami.pkr.hcl
+          echo device_name=${{ vars.DEVICE_NAME }} >> ./packer/ami.pkr.hcl
+          echo volume_size=${{ vars.VOLUME_SIZE }} >> ./packer/ami.pkr.hcl
+          echo volume_type=${{ vars.VOLUME_TYPE }} >> ./packer/ami.pkr.hcl
         
       - name: Install Packer
         run: |
@@ -30,7 +46,7 @@ jobs:
 
       - name: Run packer validate
         run: |
-          if ! packer validate ./packer/ami.pkr.hcl; then
+          if ! packer validate -evaluate-datasources --var-file=./packer/ami.pkvars.hcl ./packer/ami.pkr.hcl; then
           echo "Failed - Packer validate"
           exit 1
           fi
