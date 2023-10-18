@@ -17,7 +17,8 @@ jobs:
     - name: Setup MySQL Database
       run: |
         sudo /etc/init.d/mysql start
-        mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "GRANT ALL ON *.* TO 'admin'@'localhost' IDENTIFIED BY 'password' WITH GRANT OPTION;"
+        mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "CREATE USER 'admin'@'localhost' IDENTIFIED BY 'password';"  
+        mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "GRANT ALL ON *.* TO 'admin'@'localhost';"
         mysql -h 127.0.0.1 --port 3306 -u root -p'root' -e "FLUSH PRIVILEGES;"
     - name: Setup MySql
       uses: mirromutth/mysql-action@v1.1
