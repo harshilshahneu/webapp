@@ -80,7 +80,7 @@ source "amazon-ebs" "my-ami" {
   profile         = "${var.profile}"
   region          = "${var.aws_region}"
   ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
-  ami_description = "${var.ami_descriptio}"
+  ami_description = "${var.ami_description}"
   ami_users = [
     "${var.dev_id}",  # dev account ID 
     "${var.demo_id}", # prod account ID
