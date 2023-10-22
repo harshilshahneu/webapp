@@ -6,7 +6,7 @@ import { AssignmentModel } from './models/Assignment.js';
 import { loadCSVtoDB } from './utils/load-csv-utils.js';
 
 // Load the environment variables
-dotenv.config();
+// dotenv.config();
 
 // Initialize the database connection
 export const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {

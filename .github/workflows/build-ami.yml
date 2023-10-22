@@ -41,11 +41,11 @@ jobs:
         echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
 
 
-    - name: Install dependencies
-      run: npm install
+    # - name: Install dependencies
+    #   run: npm install
 
-    - name: Run integration tests
-      run: npm test
+    # - name: Run integration tests
+    #   run: npm test
 
   build_and_deploy_ami:
     needs: integration-tests

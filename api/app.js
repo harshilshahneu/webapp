@@ -4,7 +4,7 @@ import routes from "./routes/index.js";
 import dotenv from "dotenv";
 
 // Load the environment variables
-dotenv.config();
+// dotenv.config();
 
 // Create the app
 const app = express();
