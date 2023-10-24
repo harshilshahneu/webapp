@@ -7,7 +7,7 @@ sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
 sudo cp /tmp/bootup.service /lib/systemd/system/bootup.service
 
 # Enable and start the service
-systemctl daemon-reload
+sudo systemctl daemon-reload
 sudo systemctl enable bootup
 sudo systemctl start bootup
 sudo systemctl status bootup
