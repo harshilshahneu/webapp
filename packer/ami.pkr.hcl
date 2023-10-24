@@ -119,7 +119,7 @@ build {
   }
 
   provisioner "file" {
-    source      = "bootup.service"
+    source      = "./packer/bootup.service"
     destination = "/tmp/bootup.service"
   }
 
