@@ -1,12 +1,16 @@
 [Unit]
-After=cloud-final.service
-Wants=cloud-final.service
+Description=Webapp
+ConditionPathExists=/opt/webapp/index.js
+After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/node /home/admin/webapp/index.js
-WorkingDirectory=/home/admin/webapp
-Restart=on-failure
+User=csye6225
+Group=csye6225
+WorkingDirectory=/opt/webapp
+ExecStart=/usr/bin/node /opt/webapp/index.js
+Restart=always
+RestartSec=3
 
 [Install]
 WantedBy=cloud-init.target
