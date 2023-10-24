@@ -1,14 +1,11 @@
 name: Build and Deploy AMI
 
 on:
-  # workflow_dispatch:
-  # pull_request:
-  #   branches: 
-  #     - main
-  #   types: [closed]
   workflow_dispatch:
   pull_request:
-    branches: [ main ]
+    branches: 
+      - main
+    types: [closed]
 
 jobs:
   integration-tests:
@@ -69,7 +66,7 @@ jobs:
       #     echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
       #     echo DB_DIALECT=${{ vars.DB_DIALECT }} >> .env
       #     echo USER_CSV_PATH=${{ vars.USER_CSV_PATH }} >> .env
-      #     echo NODE_ENV=${{ vars.NODE_ENV }} >> .env
+      #     echo NODE_ENV=${{ vars.NODE_ENV }} >> .env @TODO TO BE REMOVED
 
       - name: zip application
         run: zip -r webapp.zip .

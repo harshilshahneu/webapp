@@ -124,7 +124,7 @@ build {
   }
 
   provisioner "shell" {
-    scripts      = [
+    scripts = [
       "./packer/init.sh",
       "./packer/setup.sh",
     ]
