@@ -1,0 +1,12 @@
+[Unit]
+After=cloud-final.service
+Wants=cloud-final.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node /home/admin/webapp/index.js
+WorkingDirectory=/home/admin/webapp
+Restart=on-failure
+
+[Install]
+WantedBy=cloud-init.target

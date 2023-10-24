@@ -118,8 +118,16 @@ build {
     destination = "~/webapp.zip"
   }
 
+  provisioner "file" {
+    source      = "bootup.service"
+    destination = "/tmp/bootup.service"
+  }
+
   provisioner "shell" {
-    scripts      = ["./packer/deploy.sh"]
+    scripts      = [
+      "./packer/init.sh",
+      "./packer/setup.sh",
+    ]
     pause_before = "10s"
     timeout      = "10s"
   }
