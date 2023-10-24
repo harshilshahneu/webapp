@@ -21,6 +21,9 @@ echo "installing npm"
 sudo apt-get install -y npm
 npm -v
 
+#move the zip
+sudo cp /tmp/webapp.zip /opt/webapp.zip
+
 #make and folder unzip the project
 cd /opt || exit
 sudo mkdir webapp
