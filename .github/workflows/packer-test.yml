@@ -3,7 +3,7 @@ name: Packer Validation
 on:
   workflow_dispatch:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   validate-packer-template:

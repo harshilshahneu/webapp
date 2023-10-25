@@ -1,18 +1,15 @@
 name: Build and Deploy AMI
 
 on:
-  # workflow_dispatch:
-  # pull_request:
-  #   branches: 
-  #     - main
-  #   types: [closed]
   workflow_dispatch:
   pull_request:
-    branches: [main]
+    branches: 
+      - main
+    types: [closed]
 
 jobs:
   integration-tests:
-    # if: ${{ github.event.pull_request.merged }} @TODO revert this
+    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
 
     steps:
@@ -58,18 +55,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      # - name: Setup envirornment variables
-      #   run: |
-      #     touch .env
-      #     echo PORT=${{ vars.PORT }} >> .env
-      #     echo DB_HOST=${{ vars.DB_HOST }} >> .env
-      #     echo DB_NAME=${{ vars.DB_NAME}} >> .env
-      #     echo DB_USER=${{ vars.DB_USER }} >> .env
-      #     echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-      #     echo DB_DIALECT=${{ vars.DB_DIALECT }} >> .env
-      #     echo USER_CSV_PATH=${{ vars.USER_CSV_PATH }} >> .env
-      #     echo NODE_ENV=${{ vars.NODE_ENV }} >> .env @TODO TO BE REMOVED
 
       - name: zip application
         run: zip -r webapp.zip .
