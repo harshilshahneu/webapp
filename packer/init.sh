@@ -21,16 +21,20 @@ echo "installing npm"
 sudo apt-get install -y npm
 npm -v
 
-#move the zip
-sudo cp /tmp/webapp.zip /opt/webapp.zip
-
-#make and folder unzip the project
-cd /opt || exit
-sudo mkdir webapp
-sudo unzip webapp.zip -d webapp
-
 #remove .git
 sudo apt-get remove -y git
+
+# Add user and group
+sudo groupadd csye6225
+sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225
+
+#move the zip
+sudo cp /tmp/webapp.zip /opt/csye6225/webapp.zip
+
+#make and folder unzip the project
+cd /opt/csye6225 || exit
+sudo mkdir webapp
+sudo unzip webapp.zip -d webapp
 
 # go in the webapp
 cd webapp/ || exit
