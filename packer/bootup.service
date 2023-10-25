@@ -1,14 +1,14 @@
 [Unit]
 Description=Webapp
-ConditionPathExists=/opt/webapp/index.js
+ConditionPathExists=/opt/csye6225/webapp/index.js
 After=network.target
 
 [Service]
 Type=simple
 User=csye6225
 Group=csye6225
-WorkingDirectory=/opt/webapp
-ExecStart=/usr/bin/node /opt/webapp/index.js
+WorkingDirectory=/opt/csye6225/webapp
+ExecStart=/usr/bin/node /opt/csye6225/webapp/index.js
 Restart=always
 RestartSec=3
 
