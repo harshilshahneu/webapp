@@ -7,7 +7,7 @@ import { setResponse } from "../utils/response-utils.js";
 export const validateEmptyPayload = (req, res, next) => {  
     //payload and query params should be empty
     if(Object.keys(req.body).length || Object.keys(req.query).length) {
-        setResponse(res, 400) 
+        setResponse({req, res, status: 400, err: new Error('Bad Request') }) 
     } else {
         return next();
     }
@@ -27,7 +27,6 @@ export const validatePayloadSchema = (schemaKeys, optionalKeys) => {
             if(optionalKeys) {
                 optionalKeys.forEach(key => {
                     const index = reqKeys.indexOf(key);
-                    console.log(index);
                     if(index > -1) {
                         reqKeys.splice(index, 1);
                         delete req.body[key];
@@ -35,7 +34,6 @@ export const validatePayloadSchema = (schemaKeys, optionalKeys) => {
                 });
             }
 
-            console.log(reqKeys)
             //check if the payload has all the schema properties and no extra properties
             const hasAllSchemaProperties = schemaKeys.every(key => reqKeys.includes(key));
             const hasNoExtraProperties = reqKeys.every(key => schemaKeys.includes(key));
@@ -43,7 +41,7 @@ export const validatePayloadSchema = (schemaKeys, optionalKeys) => {
         }
 
         if(!valid) {
-            setResponse(res, 400);
+            setResponse({req, res, status: 400, err: new Error('Bad Request') });
             return;
         }
         
@@ -80,7 +78,7 @@ export const validatePayloadProperties = (schemaKeys, optionalKeys) => {
         }
 
         if(!valid) {
-            setResponse(res, 400);
+            setResponse({req, res, status: 400, err: new Error('Bad Request') });
             return;
         }
 

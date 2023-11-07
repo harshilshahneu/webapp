@@ -1,13 +1,11 @@
 import { logger } from './../../configs/logger.config.js';
-import client from '../../configs/statsd.config.js';
-export const setResponse = (res, status, headers, data) => {
+
+export const setResponse = ({ req, res, status, headers, data, err }) => {
     //set logs for response
-    client.increment(`response.status.${status}`);
     if(status >= 400) {
-        //@TODO add error message to logs
-        logger.error(`Response status: ${status}`);
+        logger.error(`${req.method} ${req.originalUrl} ${status} "${err.message.replace(/(\r\n|\n|\r)/gm,"")}"`);
     } else {
-        logger.info(`Response status: ${status}`);
+        logger.info(`${req.method} ${req.originalUrl} ${status}`);
     }
 
 

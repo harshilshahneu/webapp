@@ -15,7 +15,7 @@ const routes = (app) => {
 
     // Catch-all middleware for unhandled routes
     app.use((req, res) => {
-        setResponse(res, 404);
+        setResponse({ req, res, status: 404, err: new Error('Route Not Found') });
     });
 }
 

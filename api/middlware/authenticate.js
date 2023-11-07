@@ -27,12 +27,8 @@ export const authenticate = async (req, res, next) => {
         // if the email and password are not set, challenge the client to authenticate
         // if the email and password are set, but incorrect, send only 401
         const authenticateHeader = email && password ? {} : { "WWW-Authenticate": 'Basic realm="Access to the staging site", charset="UTF-8"' };
-        setResponse(
-            res,
-            401,
-            authenticateHeader
-        )
+        setResponse({req, res, status: 401, headers: authenticateHeader, err: new Error('Authentication failed') }) 
     } catch (err) {
-        setResponse(res, 400, null, err);
+        setResponse({req, res, status: 400, err: new Error('Bad Request') }) 
     }
 }

@@ -9,7 +9,7 @@ const Router = express.Router();
 Router.route('/')
     .get(validateEmptyPayload, healthzController.get)
     .all((req, res) => {
-        setResponse(res, 405);
+        setResponse({ req, res, status: 405, err: new Error('Method Not Allowed') });
     });
 
 export default Router;

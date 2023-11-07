@@ -19,7 +19,7 @@ Router.route('/')
         "assignment_updated"
     ]), assignmentController.createAssigment)
     .all((req, res) => {
-        setResponse(res, 405);
+        setResponse({ req, res, status: 405, err: new Error('Method Not Allowed') });
     });
 
 
@@ -37,7 +37,7 @@ Router.route('/:id')
     ]), assignmentController.updateAssigment)
     .delete(validateEmptyPayload, assignmentController.deleteAssigment)
     .all((req, res) => {
-        setResponse(res, 405);
+        setResponse({ req, res, status: 405, err: new Error('Method Not Allowed') });
     });
 
 export default Router;

@@ -8,10 +8,9 @@ export const getDBStatus = async (req, res, next) => {
         if(status === 200) {
             return next();
         } else {
-            setResponse(res, 503);
+            setResponse({ req, res, status: 503, err: new Error('Service Unavailable')});
         }
     } catch (err) {
-        console.log(err);
-        return setResponse(res, 400, err);
+        return  setResponse({req, res, status: 400, err: new Error('Bad Request') }) ;
     }
 }
