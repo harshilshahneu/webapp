@@ -6,7 +6,7 @@ import { setResponse } from "../utils/response-utils.js";
 
 export const validateEmptyPayload = (req, res, next) => {  
     //payload and query params should be empty
-    if(Object.keys(req.body).length || Object.keys(req.query).length) {
+    if(Object.keys(req.body).length || Object.keys(req.query).length ||  req.get('Content-Length') > 0) {
         setResponse({req, res, status: 400, err: new Error('Bad Request') }) 
     } else {
         return next();
