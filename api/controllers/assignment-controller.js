@@ -6,7 +6,7 @@ import client from '../../configs/statsd.config.js';
 //get all assignments
 export const getAssigments = async (req, res) => {
     try {
-        client.increment(`${req.method} ${req.originalUrl}`);
+        client.increment(`get.all.assignments`);
 
         const assignments = await assignmentService.getAll();
         setResponse({ req, res, status: 200, data: assignments });
@@ -18,7 +18,7 @@ export const getAssigments = async (req, res) => {
 //get an assignment by id
 export const getAssigmentById = async (req, res) => {
     try {
-        client.increment(`${req.method} ${req.originalUrl}`);
+        client.increment(`get.assignment.by.id`);
 
         const assignment = await assignmentService.getById(req.params.id);
         if(assignment) {
@@ -34,7 +34,7 @@ export const getAssigmentById = async (req, res) => {
 //create an assignment
 export const createAssigment = async (req, res) => {
     try {
-        client.increment(`${req.method} ${req.originalUrl}`);
+        client.increment(`create.assignment`);
 
         const newAssignment = await assignmentService.create(req.body, req.user.AccountId);
         setResponse({ req, res, status: 201, data: newAssignment });
@@ -53,7 +53,7 @@ export const createAssigment = async (req, res) => {
 //update an assignment
 export const updateAssigment = async (req, res) => {
     try {
-        client.increment(`${req.method} ${req.originalUrl}`);
+        client.increment(`update.assignment`);
 
         const status = await assignmentService.update(req.params.id, req.body, req.user.AccountId);
         setResponse({ req, res, status });
@@ -72,7 +72,7 @@ export const updateAssigment = async (req, res) => {
 //delete an assignment
 export const deleteAssigment = async (req, res) => {
     try {
-        client.increment(`${req.method} ${req.originalUrl}`);
+        client.increment(`delete.assignment`);
 
         const status = await assignmentService.remove(req.params.id, req.user.AccountId);
         setResponse({ req, res, status });

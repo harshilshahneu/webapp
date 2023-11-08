@@ -4,7 +4,7 @@ import client from '../../configs/statsd.config.js';
 
 export const get = async (req, res) => {
     try {
-        client.increment(`${req.method} ${req.originalUrl}`);
+        client.increment(`get.healthz`);
         
         const { status } = await healthZService.getConnection();
         if(status === 200) {
