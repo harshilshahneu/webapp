@@ -22,7 +22,7 @@ export const getAssigmentById = async (req, res) => {
             setResponse({ req, res, status: 404, err: new Error('Assignment Not Found') });
         }
     } catch (err) {
-        setResponse({ req, res, stats: 400, err});
+        setResponse({ req, res, status: 400, err});
     }
 }
 
