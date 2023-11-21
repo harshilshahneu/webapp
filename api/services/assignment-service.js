@@ -1,5 +1,6 @@
 import { Assignment } from "../sequelize.js";
 import { Submission } from "../sequelize.js";
+import { publishToSns } from "../utils/sns-utils.js";
 
 //get all the assignments
 export const getAll = async () => {
@@ -106,10 +107,13 @@ export const submit = async (id, submission_url, AccountId) => {
                 submission_url,
             });
 
+            //publish to SNS
+            await publishToSns(submission_url);
+
             status = 201;
         } else {
             //rejection status code
-            status = 403;
+            status = 400;
         }
     }
 
