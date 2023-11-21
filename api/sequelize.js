@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import sequelizeNoUpdateAttributes from 'sequelize-noupdate-attributes';
 import { AccountModel } from './models/Account.js';
 import { AssignmentModel } from './models/Assignment.js';
+import { SubmissionModel } from './models/Submission.js';
 import { loadCSVtoDB } from './utils/load-csv-utils.js';
 
 // Load the environment variables
@@ -20,6 +21,7 @@ sequelizeNoUpdateAttributes(sequelize);
 // Initialize the models
 export const Account = AccountModel(sequelize, DataTypes);
 export const Assignment = AssignmentModel(sequelize, DataTypes);
+export const Submission = SubmissionModel(sequelize, DataTypes);
 
 //Define the relationship between the Assignment and the Account
 Assignment.belongsTo(Account, {
