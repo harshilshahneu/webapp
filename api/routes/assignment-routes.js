@@ -43,4 +43,11 @@ Router.route('/:id')
         setResponse({ req, res, status: 405, err: new Error('Method Not Allowed') });
     });
 
+Router.route('/:id/submission')
+    .post(increment(`create.submission`), getDBStatus, authenticate, validatePayloadProperties([
+        "submission_url",
+    ]), assignmentController.submitAssigment)
+    .all(getDBStatus, authenticate, (req, res) => {
+        setResponse({ req, res, status: 405, err: new Error('Method Not Allowed') });
+    });
 export default Router;

@@ -69,3 +69,27 @@ export const deleteAssigment = async (req, res) => {
         setResponse({ req, res, status: 400, err });
     }
 }
+
+//submit the assignment
+export const submitAssigment = async (req, res) => {
+    try {
+        const newSubmission = await assignmentService.submit(req.params.id, req.body.submission_url, req.user.AccountId);
+        switch(newSubmission.status) {
+            case 201:
+                setResponse({ req, res, status: newSubmission.status, data: newSubmission.submission });
+                break;
+            default: //@TODO: add other cases with error messages
+                setResponse({ req, res, status: newSubmission.status });
+                break;
+        }
+    } catch (err) {
+        let message;
+        if(err instanceof Sequelize.DatabaseError) {
+            message = err.message;
+        } else if (err instanceof Sequelize.ValidationError || err instanceof Sequelize.UniqueConstraintError) {
+            message = err.errors.map(err => err.message);
+        }
+
+        setResponse({ req, res, status: 400, err: new Error(message) });
+    }
+}

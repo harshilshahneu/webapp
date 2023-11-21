@@ -1,4 +1,5 @@
 import { Assignment } from "../sequelize.js";
+import { Submission } from "../sequelize.js";
 
 //get all the assignments
 export const getAll = async () => {
@@ -75,4 +76,45 @@ export const remove = async (id, AccountId) => {
     }
 
     return status;
+}
+
+export const getSubmissionsById = async (assignment_id) => {
+    const submissions = await Submission.findAll({
+        where: {
+            assignment_id,
+        }
+    });
+
+    return submissions;
+}
+//submit an assignment
+export const submit = async (id, submission_url, AccountId) => {
+    let status = await checkOwnership(id, AccountId);
+    let submission = null;
+
+    if(status === 200) {
+        //check number of attempts remaining for the assignment
+        const assignment = await getById(id);
+      
+        //check existing submissions
+        const submissions = await getSubmissionsById(id);
+
+        //check if the number of submissions is less than the number of attempts allowed and check the deadline as well
+        if(submissions.length < assignment.num_of_attempts && new Date() < assignment.deadline) {
+            submission = await Submission.create({
+                assignment_id: id,
+                submission_url,
+            });
+
+            status = 201;
+        } else {
+            //rejection status code
+            status = 403;
+        }
+    }
+
+    return {
+        submission,
+        status,
+    };
 }
