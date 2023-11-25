@@ -30,6 +30,13 @@ Assignment.belongsTo(Account, {
     }
 });
 Account.hasMany(Assignment);
+Submission.belongsTo(Assignment, {
+    foreignKey: {
+        name: 'assignment_id',
+        allowNull: false,
+    },
+    onDelete: 'CASCADE'
+});
 
 export const syncDB = async () => {
     try {

@@ -70,7 +70,8 @@ export const deleteAssigment = async (req, res) => {
     }
 }
 
-//submit the assignment
+//@EDGE CASES - WHAT IF DEADLINE / NUM OF ATTEMPTS IS CHANGED AFTER SUBMISSIONS HAVE BEEN MADE?
+//submit the assignment 
 export const submitAssigment = async (req, res) => {
     try {
         const newSubmission = await assignmentService.submit(req.params.id, req.body.submission_url, req.user.AccountId);
