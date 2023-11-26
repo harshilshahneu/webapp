@@ -74,7 +74,7 @@ export const deleteAssigment = async (req, res) => {
 //submit the assignment 
 export const submitAssigment = async (req, res) => {
     try {
-        const newSubmission = await assignmentService.submit(req.params.id, req.body.submission_url, req.user.AccountId);
+        const newSubmission = await assignmentService.submit(req.params.id, req.body.submission_url, req.user);
         switch(newSubmission.status) {
             case 201:
                 setResponse({ req, res, status: newSubmission.status, data: newSubmission.submission });

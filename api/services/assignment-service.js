@@ -89,7 +89,8 @@ export const getSubmissionsById = async (assignment_id) => {
     return submissions;
 }
 //submit an assignment
-export const submit = async (id, submission_url, AccountId) => {
+export const submit = async (id, submission_url, user) => {
+    const { AccountId, email } = user;
     let status = await checkOwnership(id, AccountId);
     let submission = null;
 
@@ -108,7 +109,10 @@ export const submit = async (id, submission_url, AccountId) => {
             });
 
             //publish to SNS
-            await publishToSns(submission_url);
+            await publishToSns({
+                submission_url,
+                email,
+            });
 
             status = 201;
         } else {

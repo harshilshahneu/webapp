@@ -13,7 +13,7 @@ export const publishToSns = async (message) => {
     
     // Create publish parameters
     const params = {
-      Message: message,
+      Message: JSON.stringify(message),
       TopicArn: process.env.SNS_TOPIC_ARN
     };
     
