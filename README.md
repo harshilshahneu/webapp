@@ -4,7 +4,7 @@
 1. Install [Node.js](https://nodejs.org/en/download/)
 2. Install [npm](https://www.npmjs.com/get-npm)
 3. Install [MariaDB](https://mariadb.org/download/)
-4. Setup .env file in the root directory of the project with the following variables:
+4. Setup .env file in the root directory of the project with the following variables: 
 ```
 PORT=8080
 DB_HOST=127.0.0.1
