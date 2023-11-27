@@ -7,8 +7,6 @@ dotenv.config();
 export const publishToSns = async (message) => {
     AWS.config.update({
         region: process.env.region,
-        accessKeyId: process.env.accessKeyId,
-        secretAccessKey: process.env.secretAccessKey
     });
     
     // Create publish parameters
