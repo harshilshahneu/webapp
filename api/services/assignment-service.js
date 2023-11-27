@@ -110,6 +110,7 @@ export const submit = async (id, submission_url, user) => {
 
             //publish to SNS
             await publishToSns({
+                assignment_id: id,
                 submission_url,
                 email,
             });
