@@ -10,6 +10,10 @@ export const SubmissionModel = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             allowNull: false
         },
+        account_id: {
+            type: DataTypes.UUID,
+            allowNull: false
+        },
         submission_url: {
             type: DataTypes.STRING,
             allowNull: false,
