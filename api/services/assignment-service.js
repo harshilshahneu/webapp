@@ -49,7 +49,10 @@ export const update = async (id, assignment, AccountId) => {
     
     let status = await checkOwnership(id, AccountId);
 
-    if(status === 200) {
+    //check if the assignment has any submissions
+    const submissions = await getSubmissionsById({assignment_id: id});
+
+    if(status === 200 && submissions.length === 0) {
         await Assignment.update(assignment, {
             where: {
                 id,
@@ -57,6 +60,8 @@ export const update = async (id, assignment, AccountId) => {
         });
     
         status = 204;
+    } else {
+        status = 400;
     }
 
     return status;
@@ -66,7 +71,10 @@ export const update = async (id, assignment, AccountId) => {
 export const remove = async (id, AccountId) => {
     let status = await checkOwnership(id, AccountId);
 
-    if(status === 200) {
+    //check if the assignment has any submissions
+    const submissions = await getSubmissionsById({assignment_id: id});
+
+    if(status === 200 && submissions.length === 0) {
         await Assignment.destroy({
             where: {
                 id,
@@ -74,15 +82,17 @@ export const remove = async (id, AccountId) => {
         });
 
         status = 204;
+    } else {
+        status = 400;
     }
 
     return status;
 }
 
-export const getSubmissionsById = async (assignment_id) => {
+export const getSubmissionsById = async (conditions) => {
     const submissions = await Submission.findAll({
         where: {
-            assignment_id,
+            ...conditions
         }
     });
 
@@ -91,35 +101,40 @@ export const getSubmissionsById = async (assignment_id) => {
 //submit an assignment
 export const submit = async (id, submission_url, user) => {
     const { AccountId, email } = user;
-    let status = await checkOwnership(id, AccountId);
     let submission = null;
+    let status = null;
 
-    if(status === 200) {
-        //check number of attempts remaining for the assignment
-        const assignment = await getById(id);
-      
-        //check existing submissions
-        const submissions = await getSubmissionsById(id);
+    //check number of attempts remaining for the assignment
+    const assignment = await getById(id);
+    
+    //check existing submissions
+    const submissions = await getSubmissionsById({
+        assignment_id: id,
+        account_id: AccountId,
+    });
 
-        //check if the number of submissions is less than the number of attempts allowed and check the deadline as well
-        if(submissions.length < assignment.num_of_attempts && new Date() < assignment.deadline) {
-            submission = await Submission.create({
-                assignment_id: id,
-                submission_url,
-            });
+    //check if the number of submissions is less than the number of attempts allowed and check the deadline as well
+    if(submissions.length < assignment.num_of_attempts && new Date() < assignment.deadline) {
+        submission = await Submission.create({
+            assignment_id: id,
+            account_id: AccountId,
+            submission_url,
+        });
 
-            //publish to SNS
-            await publishToSns({
-                assignment_id: id,
-                submission_url,
-                email,
-            });
+        //remove assignment_id from the response
+        delete submission.dataValues.account_id;
 
-            status = 201;
-        } else {
-            //rejection status code
-            status = 400;
-        }
+        //publish to SNS
+        await publishToSns({
+            assignment_id: id,
+            submission_url,
+            email,
+        });
+
+        status = 201;
+    } else {
+        //rejection status code
+        status = 400;
     }
 
     return {
