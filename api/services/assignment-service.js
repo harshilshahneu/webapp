@@ -128,6 +128,7 @@ export const submit = async (id, submission_url, user) => {
         await publishToSns({
             assignment_id: id,
             submission_url,
+            account_id: AccountId,
             email,
         });
 
