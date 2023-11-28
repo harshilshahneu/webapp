@@ -22,6 +22,11 @@ export const SubmissionModel = (sequelize, DataTypes) => {
                   protocols: ['http', 'https'],
                   requireProtocol: true,
                 },
+                endsWithZip(value) {
+                    if (!value.endsWith('.zip')) {
+                        throw new Error('Submission URL must end with .zip');
+                    }
+                },
             },
         }
     }, {
