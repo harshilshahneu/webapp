@@ -80,7 +80,7 @@ export const submitAssigment = async (req, res) => {
                 setResponse({ req, res, status: newSubmission.status, data: newSubmission.submission });
                 break;
             default: //@TODO: add other cases with error messages
-                setResponse({ req, res, status: newSubmission.status });
+                setResponse({ req, res, status: newSubmission.status, data: {error: newSubmission.errorMessage} });
                 break;
         }
     } catch (err) {

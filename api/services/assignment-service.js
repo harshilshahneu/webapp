@@ -103,6 +103,8 @@ export const submit = async (id, submission_url, user) => {
     const { AccountId, email } = user;
     let submission = null;
     let status = null;
+    let errorMessage = '';
+    const currentDate = new Date();
 
     //check number of attempts remaining for the assignment
     const assignment = await getById(id);
@@ -114,7 +116,7 @@ export const submit = async (id, submission_url, user) => {
     });
 
     //check if the number of submissions is less than the number of attempts allowed and check the deadline as well
-    if(submissions.length < assignment.num_of_attempts && new Date() < assignment.deadline) {
+    if(submissions.length < assignment.num_of_attempts && currentDate < assignment.deadline) {
         submission = await Submission.create({
             assignment_id: id,
             account_id: AccountId,
@@ -134,6 +136,12 @@ export const submit = async (id, submission_url, user) => {
 
         status = 201;
     } else {
+        if(submissions.length >= assignment.num_of_attempts) {
+            errorMessage = 'Maximum number of attempts reached';
+        } else if(currentDate > assignment.deadline) {
+            errorMessage = 'Assignment deadline has passed';
+        } 
+
         //rejection status code
         status = 400;
     }
@@ -141,5 +149,6 @@ export const submit = async (id, submission_url, user) => {
     return {
         submission,
         status,
+        errorMessage,
     };
 }
