@@ -45,23 +45,24 @@ export const create = async (assignment, AccountId) => {
 }
 
 //update an assignment
-export const update = async (id, assignment, AccountId) => {
-    
+export const update = async (id, assignment, AccountId) => {    
     let status = await checkOwnership(id, AccountId);
 
-    //check if the assignment has any submissions
-    const submissions = await getSubmissionsById({assignment_id: id});
+    if(status === 200) {
+         //check if the assignment has any submissions
+        const submissions = await getSubmissionsById({assignment_id: id});
 
-    if(status === 200 && submissions.length === 0) {
-        await Assignment.update(assignment, {
-            where: {
-                id,
-            },
-        });
-    
-        status = 204;
-    } else {
-        status = 400;
+        if(submissions.length === 0) {
+            await Assignment.update(assignment, {
+                where: {
+                    id,
+                },
+            });
+        
+            status = 204;
+        } else {
+            status = 400;
+        }
     }
 
     return status;
@@ -71,19 +72,21 @@ export const update = async (id, assignment, AccountId) => {
 export const remove = async (id, AccountId) => {
     let status = await checkOwnership(id, AccountId);
 
-    //check if the assignment has any submissions
-    const submissions = await getSubmissionsById({assignment_id: id});
+    if(status === 200) {
+         //check if the assignment has any submissions
+        const submissions = await getSubmissionsById({assignment_id: id});
 
-    if(status === 200 && submissions.length === 0) {
-        await Assignment.destroy({
-            where: {
-                id,
-            },
-        });
-
-        status = 204;
-    } else {
-        status = 400;
+        if(submissions.length === 0) {
+            await Assignment.destroy({
+                where: {
+                    id,
+                },
+            });
+    
+            status = 204;
+        } else {
+            status = 400;
+        }
     }
 
     return status;
@@ -108,44 +111,50 @@ export const submit = async (id, submission_url, user) => {
 
     //check number of attempts remaining for the assignment
     const assignment = await getById(id);
-    
-    //check existing submissions
-    const submissions = await getSubmissionsById({
-        assignment_id: id,
-        account_id: AccountId,
-    });
 
-    //check if the number of submissions is less than the number of attempts allowed and check the deadline as well
-    if(submissions.length < assignment.num_of_attempts && currentDate < assignment.deadline) {
-        submission = await Submission.create({
-            assignment_id: id,
-            account_id: AccountId,
-            submission_url,
-        });
-
-        //remove assignment_id from the response
-        delete submission.dataValues.account_id;
-
-        //publish to SNS
-        await publishToSns({
-            assignment_id: id,
-            submission_url,
-            account_id: AccountId,
-            email,
-        });
-
-        status = 201;
+    //return 404 if the assignment does not exist
+    if(!assignment) {
+        status = 404;
+        errorMessage = 'Assignment not found';
     } else {
-        if(submissions.length >= assignment.num_of_attempts) {
-            errorMessage = 'Maximum number of attempts reached';
-        } else if(currentDate > assignment.deadline) {
-            errorMessage = 'Assignment deadline has passed';
-        } 
-
-        //rejection status code
-        status = 400;
+        //check existing submissions
+        const submissions = await getSubmissionsById({
+            assignment_id: id,
+            account_id: AccountId,
+        });
+    
+        //check if the number of submissions is less than the number of attempts allowed and check the deadline as well
+        if(submissions.length < assignment.num_of_attempts && currentDate < assignment.deadline) {
+            submission = await Submission.create({
+                assignment_id: id,
+                account_id: AccountId,
+                submission_url,
+            });
+    
+            //remove assignment_id from the response
+            delete submission.dataValues.account_id;
+    
+            //publish to SNS
+            await publishToSns({
+                assignment_id: id,
+                submission_url,
+                account_id: AccountId,
+                email,
+            });
+    
+            status = 201;
+        } else {
+            if(submissions.length >= assignment.num_of_attempts) {
+                errorMessage = 'Maximum number of attempts reached';
+            } else if(currentDate > assignment.deadline) {
+                errorMessage = 'Assignment deadline has passed';
+            } 
+    
+            //rejection status code
+            status = 400;
+        }
     }
-
+    
     return {
         submission,
         status,
