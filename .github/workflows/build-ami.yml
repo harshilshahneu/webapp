@@ -1,15 +1,19 @@
 name: Build and Deploy AMI
 
+# on:
+#   workflow_dispatch:
+#   pull_request:
+#     branches: 
+#       - main
+#     types: [closed]
 on:
   workflow_dispatch:
   pull_request:
-    branches: 
-      - main
-    types: [closed]
+    branches: [main]
 
 jobs:
   integration-tests:
-    if: ${{ github.event.pull_request.merged }}
+    # if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
 
     steps:
@@ -85,4 +89,16 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           packer build --var-file=./packer/ami.pkvars.hcl ./packer/ami.pkr.hcl;
-        
+          ami_id=$(packer build --var-file=./packer/ami.pkvars.hcl ./packer/ami.pkr.hcl | grep 'AMI:' | awk '{print $2}')
+          echo "AMI_ID=$ami_id" >> $GITHUB_ENV
+      
+      - name: Update Launch Template and Trigger Instance Refresh
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          # Update Launch Template version with the latest AMI ID
+          aws ec2 create-launch-template-version --launch-template-id lt-026b771e3c50039e9 --version-description WebVersion2 --source-version 1 --launch-template-data '{"ImageId":"${{ env.AMI_ID }}"}'
+
+          # Issue command to auto-scaling group for instance refresh
+          aws autoscaling start-instance-refresh --auto-scaling-group-name webapp-asg-e264287
