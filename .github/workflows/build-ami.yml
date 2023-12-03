@@ -97,8 +97,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_DEV_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_DEV_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Update Launch Template and Trigger Instance Refresh
@@ -108,3 +108,17 @@ jobs:
 
           # Issue command to auto-scaling group for instance refresh
           aws autoscaling start-instance-refresh --auto-scaling-group-name webapp-asg-e264287
+
+      - name: Wait for Instance Refresh to Complete
+        run: |
+          # Use AWS CLI to check the status of instance refresh
+          status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name webapp-asg-e264287 --query 'InstanceRefreshes[0].Status' --output text)
+          while [[ "$status" != "Successful" && "$status" != "Failed" ]]; do
+            sleep 60
+            status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name webapp-asg-e264287 --query 'InstanceRefreshes[0].Status' --output text)
+          done
+
+          # Exit with an error if instance refresh failed
+          if [ "$status" == "Failed" ]; then
+            exit 1
+          fi
