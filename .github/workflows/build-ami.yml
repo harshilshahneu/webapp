@@ -89,7 +89,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           packer build --var-file=./packer/ami.pkvars.hcl -machine-readable ./packer/ami.pkr.hcl | tee build.log
-          ami_id=$(egrep -m1 -oe 'ami-.{8}' build.log)
+          # Install jq to parse JSON data and map it to the shell variable
+          sudo apt-get install jq
+          ami_id=$(jq -r '.builds[-1].artifact_id' manifest.json | cut -d':' -f2)
           echo "AMI_ID=$ami_id" >> $GITHUB_ENV
       
       - name: Update Launch Template and Trigger Instance Refresh
