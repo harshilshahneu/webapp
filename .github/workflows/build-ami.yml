@@ -104,18 +104,18 @@ jobs:
       - name: Update Launch Template and Trigger Instance Refresh
         run: |
           # Update Launch Template version with the latest AMI ID
-          aws ec2 create-launch-template-version --launch-template-id lt-026b771e3c50039e9 --version-description WebVersion2 --source-version 1 --launch-template-data '{"ImageId":"${{ env.AMI_ID }}"}'
+          aws ec2 create-launch-template-version --launch-template-id ${{ secrets.LAUNCH_TEMPLATE_ID }} --version-description WebVersion2 --source-version 1 --launch-template-data '{"ImageId":"${{ env.AMI_ID }}"}'
 
           # Issue command to auto-scaling group for instance refresh
-          aws autoscaling start-instance-refresh --auto-scaling-group-name webapp-asg-e264287
+          aws autoscaling start-instance-refresh --auto-scaling-group-name ${{ secrets.AUTO_SCALING_GROUP_NAME }}
 
       - name: Wait for Instance Refresh to Complete
         run: |
           # Use AWS CLI to check the status of instance refresh
-          status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name webapp-asg-e264287 --query 'InstanceRefreshes[0].Status' --output text)
+          status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name ${{ secrets.AUTO_SCALING_GROUP_NAME }} --query 'InstanceRefreshes[0].Status' --output text)
           while [[ "$status" != "Successful" && "$status" != "Failed" ]]; do
             sleep 60
-            status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name webapp-asg-e264287 --query 'InstanceRefreshes[0].Status' --output text)
+            status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name ${{ secrets.AUTO_SCALING_GROUP_NAME }} --query 'InstanceRefreshes[0].Status' --output text)
           done
 
           # Exit with an error if instance refresh failed
