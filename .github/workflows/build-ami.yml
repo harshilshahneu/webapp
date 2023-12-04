@@ -1,19 +1,15 @@
 name: Build and Deploy AMI
 
-# on:
-#   workflow_dispatch:
-#   pull_request:
-#     branches: 
-#       - main
-#     types: [closed]
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
+    branches: 
+      - main
+    types: [closed]
 
 jobs:
   integration-tests:
-    # if: ${{ github.event.pull_request.merged }}
+    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
 
     steps:
@@ -97,14 +93,14 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_DEV_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_DEV_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_DEMO_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_DEMO_ACCESS_KEY }}
           aws-region: us-east-1
 
       - name: Update Launch Template and Trigger Instance Refresh
         run: |
           # Update Launch Template version with the latest AMI ID
-          aws ec2 create-launch-template-version --launch-template-id ${{ secrets.LAUNCH_TEMPLATE_ID }} --version-description WebVersion2 --source-version 1 --launch-template-data '{"ImageId":"${{ env.AMI_ID }}"}'
+          aws ec2 create-launch-template-version --launch-template-name ${{ secrets.LAUNCH_TEMPLATE_NAME }} --version-description WebVersion2 --source-version 1 --launch-template-data '{"ImageId":"${{ env.AMI_ID }}"}'
 
           # Issue command to auto-scaling group for instance refresh
           aws autoscaling start-instance-refresh --auto-scaling-group-name ${{ secrets.AUTO_SCALING_GROUP_NAME }}
