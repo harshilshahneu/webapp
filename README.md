@@ -68,9 +68,9 @@ volume_type         =
 ```
 
 ## Import the SSL certificate to AWS using CLI:
-export AWS_PROFILE=your_profile (demo)
-aws acm import-certificate --certificate certificate.pem --certificate-chain certificate-chain.pem --private-key private-key.pem
+export AWS_PROFILE=your_profile (demo) <br>
+aws acm import-certificate --certificate certificate.pem --certificate-chain certificate-chain.pem --private-key private-key.pem <br>
 
-certificate.pem - path to the certificate file
-certificate-chain.pem - path to the certificate chain file
-private-key.pem - path to the private key file generated during CSR creation
+certificate.pem - path to the certificate file <br>
+certificate-chain.pem - path to the certificate chain file <br>
+private-key.pem - path to the private key file generated during CSR creation <br>
