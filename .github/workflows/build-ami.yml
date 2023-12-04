@@ -109,12 +109,12 @@ jobs:
         run: |
           # Use AWS CLI to check the status of instance refresh
           status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name ${{ secrets.AUTO_SCALING_GROUP_NAME }} --query 'InstanceRefreshes[0].Status' --output text)
-          while [[ "$status" != "Successful" && "$status" != "Failed" ]]; do
+          while [[ "$status" != "Successful" && "$status" != "Failed" && "$status" != "Cancelled" ]]; do
             sleep 60
             status=$(aws autoscaling describe-instance-refreshes --auto-scaling-group-name ${{ secrets.AUTO_SCALING_GROUP_NAME }} --query 'InstanceRefreshes[0].Status' --output text)
           done
 
           # Exit with an error if instance refresh failed
-          if [ "$status" == "Failed" ]; then
+          if [ "$status" == "Failed" ] || [ "$status" == "Cancelled" ]; then
             exit 1
           fi
