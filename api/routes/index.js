@@ -9,7 +9,7 @@ const routes = (app) => {
     
     //Assignment routes
     // check the db status -> authenticate -> validate the payload -> call the controller
-    app.use('/v1/assignments', assignmentRoutes);
+    app.use('/demo/assignments', assignmentRoutes);
 
     // Catch-all middleware for unhandled routes
     app.use((req, res) => {
